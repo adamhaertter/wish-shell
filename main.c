@@ -6,6 +6,9 @@
 #include <errno.h>
 
 FILE *fp;
+char* default_path[] = {"/bin", "/user/bin"};
+char **paths = default_path;
+char **args;
 
 void read_command(char* str);
 void print_error();
@@ -48,15 +51,19 @@ int main(int argc, char* argv[]) {
 }
 
 void read_command(char* str) {
-    char *command, *temp_string;
-    char **args;//, **paths;
-    char* paths[] = {"", "/bin/"};
+    char *command, *temp_string; //TODO delete temp? do we still use it?
+    //char **args; //This doesnt fix our issue
     del_newline(str);
 
     command = strsep(&str," ");
     args = split_array(str);
-    //paths[0] = "/bin";
-    //printf("command: %s\n", command);
+    printf("command: %s | ", command);
+    if(args !=NULL)
+        printf("%s", args[0]);
+    else
+        printf("[null]");
+    printf(" | %s", *paths);
+    printf("\n");
 
     //functionality
     if(strcmp(command, "exit")==0) {
@@ -66,11 +73,17 @@ void read_command(char* str) {
         } 
         //good exit
         exit(0);   
-    /*} else 
+    } else 
     if(strcmp(command, "path")==0){
         //split arguments into path
-        //paths = args;
-    */
+        //printf("path detected, assigning\n");
+        paths = args;
+        //printf("path assigned\n");
+        //args = NULL;
+        // The memory allocated in split_array is being freed at the end of this run,
+        // so we can't store it in
+        printf("new path: %s \n", paths[0]);
+        return;
     } else 
     if(strcmp(command, "cd")==0){
         //custom cd call
@@ -82,6 +95,9 @@ void read_command(char* str) {
     if(strcmp(command, "ls") == 0) {
         paths[0] = "/bin/ls";
     } 
+    //TODO access checks
+
+    //printf("pre-command build check-in\n");
 
     char* exec_arr[10];
     
@@ -98,7 +114,7 @@ void read_command(char* str) {
     
     //printf("access val %d\n", access(command, X_OK));
 
-    
+    //printf("pre-fork check-in\n");
     int result = 0;
     int pid = fork();
     if(pid == 0){
