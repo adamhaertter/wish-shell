@@ -1,18 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <errno.h>
-
-FILE *fp;
-char* default_path[] = {"/bin", "/user/bin"};
-char **path = default_path;
-
-void read_command(char* str);
-void print_error();
-void del_newline(char* str);
-char** split_array(char* str);
+#include "main.h"
+#include "util.c"
+#include "command.c"
 
 int main(int argc, char* argv[]) {
     char* buffer = NULL;
@@ -22,23 +10,17 @@ int main(int argc, char* argv[]) {
         //interactive
         while(1) { 
             printf("wish> "); //terminal message
-            getline(&buffer, &n, stdin);
-            
-            read_command(buffer);
-	    if(strcmp(buffer, "exit\n") == 0){
-		    break;
-	    }
+            getline(&buffer, &n, stdin);          
+            run_command(buffer);
         }
     } else if(argc == 2) {
         //batch
         fp = fopen(argv[1], "r");
         while(1){
-            getline(&buffer, &n, fp);
-            
+            getline(&buffer, &n, fp);           
             if(feof(fp))
                 break;
-            
-            read_command(buffer);
+            run_command(buffer);
         }
     } else {
         printf("Please only include 0 or 1 argument(s) alongside the program call: the name of the file to echo\n");
@@ -46,7 +28,7 @@ int main(int argc, char* argv[]) {
     }
 }
 
-void read_command(char* str) {
+void run_command(char* str) {
     char *command;
     char **args; 
     del_newline(str);
@@ -54,69 +36,25 @@ void read_command(char* str) {
     command = strsep(&str," ");
     args = split_array(str);
 
-    //functionality
+    // Function Calls
     if(strcmp(command, "exit")==0) {
-        if(args != NULL)    {
-            // If exit has an argument
-            print_error();
-        } 
-        // good exit
-        exit(0);   
+        wish_exit(args);
     } else 
     if(strcmp(command, "path")==0){
-        // split arguments into path
-        if(args == NULL) {
-            path[0] = NULL;
-        } else {
-            for(int i = 0; i < 10; i++) {    
-                if(args[i] == NULL) {
-                    path[i] = NULL;
-                    break;
-                }
-                path[i] = malloc(30*sizeof(char));
-                strcpy(path[0], args[0]);
-                if(args[i] == NULL)
-                    break;
-            }
-        }
+        wish_path(args, path);
         return;
     } else 
     if(strcmp(command, "cd")==0){
-        // custom cd call
-        if(args == NULL || args[1] != NULL)
-            print_error();
-        chdir(args[0]);
+        wish_cd(args);
         return;
     }
 
-    // Building full list of command + args to run
-    char* exec_arr[10];
-    
-    exec_arr[0] = command;
-    int i = 0;
-    if(args != NULL) {
-        for(i = 0; i < 10; i++) {
-            exec_arr[i+1] = args[i];
-            if(args[i] == NULL)
-                break;
-        }
-    }
-    exec_arr[i+1] = NULL;
-
-    // Search directories for access
+    // Variable Construction
+    char* exec_arr[MAX_ARGS];
     char* exec_str = malloc(100);
-    for(i = 0; i < 10; i++) {
-        if(path[i] != NULL) {
-            strcpy(exec_str, path[i]);
-            strcat(exec_str, "/");
-        } else
-            strcpy(exec_str, "");
-        strcat(exec_str, command);
+    build_exec_vars(exec_arr, exec_str, args, command);
 
-        if(!access(exec_str, X_OK))
-            break;
-    }
-
+    // Execution & Fork
     int result = 0;
     int pid = fork();
     if(pid == 0){
@@ -139,23 +77,29 @@ void print_error() {
     exit(0);
 }
 
-void del_newline(char *str) {
-    int length = strlen(str);
-    str[length-1] = '\0';
-}
-
-char** split_array(char* str) {
-    if(str == NULL) {
-        return NULL;
-    }
-    char **ret = malloc(100);
-    char *temp_string;
+void build_exec_vars(char** exec_arr, char* exec_str, char** args, char* command) {
+    // Building full list of command + args to run
+    exec_arr[0] = command;
     int i = 0;
-    while(temp_string != NULL){
-        temp_string = strsep(&str," ");
-        ret[i] = temp_string;
-        i++;
+    if(args != NULL) {
+        for(i = 0; i < MAX_ARGS; i++) {
+            exec_arr[i+1] = args[i];
+            if(args[i] == NULL)
+                break;
+        }
     }
-    ret[i] = '\0';
-    return ret;
+    exec_arr[i+1] = NULL;
+
+    // Search directories for access
+    for(i = 0; i < MAX_ARGS; i++) {
+        if(path[i] != NULL) {
+            strcpy(exec_str, path[i]);
+            strcat(exec_str, "/");
+        } else
+            strcpy(exec_str, "");
+        strcat(exec_str, exec_arr[0]);
+
+        if(!access(exec_str, X_OK))
+            break;
+    }
 }
