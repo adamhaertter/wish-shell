@@ -7,7 +7,7 @@
 
 FILE *fp;
 char* default_path[] = {"/bin", "/user/bin"};
-char **paths = default_path;
+char **path = default_path;
 char **args;
 
 void read_command(char* str);
@@ -37,12 +37,12 @@ int main(int argc, char* argv[]) {
         fp = fopen(argv[1], "r");
         while(1){
             getline(&buffer, &n, fp);
+            //printf("line%d: %s", ++line_count, buffer);
             
             if(feof(fp))
                 break;
             
             read_command(buffer);
-            //printf("line%d: %s", ++line_count, buffer);
         }
     } else {
         printf("Please only include 0 or 1 argument(s) alongside the program call: the name of the file to echo\n");
@@ -57,14 +57,15 @@ void read_command(char* str) {
 
     command = strsep(&str," ");
     args = split_array(str);
+    /*
     printf("command: %s | ", command);
     if(args !=NULL)
         printf("%s", args[0]);
     else
         printf("[null]");
-    printf(" | %s", *paths);
+    printf(" | %s", *path);
     printf("\n");
-
+    */
     //functionality
     if(strcmp(command, "exit")==0) {
         if(args != NULL)    {
@@ -77,12 +78,40 @@ void read_command(char* str) {
     if(strcmp(command, "path")==0){
         //split arguments into path
         //printf("path detected, assigning\n");
-        paths = args;
-        //printf("path assigned\n");
+        //path = args;
+        
+        /* THIS WORKS!!!!!!!!!!!
+        path[0] = malloc(100);
+        strcpy(path[0], args[0]);
+        printf("path assigned\n");
+        */
+        
         //args = NULL;
         // The memory allocated in split_array is being freed at the end of this run,
         // so we can't store it in
-        printf("new path: %s \n", paths[0]);
+        //path = realloc(path, 100);
+        //free(path);
+        if(args == NULL) {
+            //printf("I see args is null, attempting to set path[0]\n");
+            path[0] = NULL;
+            //printf("path[0] now NULL\n");
+        } else {
+                //printf("path loop ");
+            for(int i = 0; i < 10; i++) {            
+                //printf("%d ", i);
+                if(args[i] == NULL) {
+                    path[i] = NULL;
+                    break;
+                }
+                path[i] = malloc(30*sizeof(char));
+                strcpy(path[0], args[0]);
+                if(args[i] == NULL)
+                    break;
+            }
+            //printf("\n");
+        }
+
+        //printf("new path: %s \n", path[0]);
         return;
     } else 
     if(strcmp(command, "cd")==0){
@@ -91,10 +120,10 @@ void read_command(char* str) {
             print_error();
         chdir(args[0]);
         return;
-    } else 
+    } /*else 
     if(strcmp(command, "ls") == 0) {
-        paths[0] = "/bin/ls";
-    } 
+        path[0] = "/bin/ls";
+    } */
     //TODO access checks
 
     //printf("pre-command build check-in\n");
@@ -111,6 +140,16 @@ void read_command(char* str) {
         }
     }
     exec_arr[i+1] = NULL;
+
+    char* exec_str = malloc(100);
+    if(path[0] != NULL) {
+        strcpy(exec_str, path[0]);
+        strcat(exec_str, "/");
+    }
+    else
+        strcpy(exec_str, "");
+    strcat(exec_str, command);
+    //printf("EXEC_STR: %s\n", exec_str);
     
     //printf("access val %d\n", access(command, X_OK));
 
@@ -119,13 +158,15 @@ void read_command(char* str) {
     int pid = fork();
     if(pid == 0){
         //kiddie pool
-        result = execv(paths[0], exec_arr);
+        result = execv(exec_str, exec_arr); //TODO FIX THIS, SEARCH ALL DIRS
+        //printf("Error caught w/ value %s\n", strerror(errno));
         if(result)
             print_error();
         
     } else {
         //adult swim
         waitpid(pid, 0, 0);
+        free(exec_str);
         return;
     }
     //printf("execv results in: %d", result);
