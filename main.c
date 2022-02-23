@@ -35,13 +35,28 @@ void run_command(char* str) {
 
     command = strsep(&str," ");
     args = split_array(str);
-
+    /*
+    printf(">command: %s\n", command);
+    if(args == NULL)
+        printf(">args is null\n");
+    else
+        printf(">args[0]: %s\n", args[0]);
+    if(path == NULL)
+        printf(">path is null\n");
+    else
+        printf(">path[0]: %s\n", *path);
+*/
     // Function Calls
     if(strcmp(command, "exit")==0) {
         wish_exit(args);
     } else 
     if(strcmp(command, "path")==0){
         wish_path(args, path);
+
+        //printf(">>path addr: %p\n", path);
+        if(path == NULL)
+        //printf("path is null in comm.c\n");
+
         return;
     } else 
     if(strcmp(command, "cd")==0){
@@ -53,7 +68,7 @@ void run_command(char* str) {
     char* exec_arr[MAX_ARGS];
     char* exec_str = malloc(100);
     build_exec_vars(exec_arr, exec_str, args, command);
-
+    //printf(">exec vars built\n");
     // Execution & Fork
     int result = 0;
     int pid = fork();
@@ -90,10 +105,11 @@ void build_exec_vars(char** exec_arr, char* exec_str, char** args, char* command
     }
     exec_arr[i+1] = NULL;
 
-    printf(">Commands built\n");
+    //printf(">Commands built\n");
     // Search directories for access
     for(i = 0; i < MAX_ARGS; i++) {
         if(path[i] != NULL) {
+            //printf(">if passed\n");
             strcpy(exec_str, path[i]);
             strcat(exec_str, "/");
         } else
