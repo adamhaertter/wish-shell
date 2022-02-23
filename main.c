@@ -90,6 +90,7 @@ void build_exec_vars(char** exec_arr, char* exec_str, char** args, char* command
     }
     exec_arr[i+1] = NULL;
 
+    printf(">Commands built\n");
     // Search directories for access
     for(i = 0; i < MAX_ARGS; i++) {
         if(path[i] != NULL) {

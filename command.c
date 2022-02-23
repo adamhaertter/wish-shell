@@ -20,9 +20,8 @@ void wish_path(char **args, char **path) {
                 break;
             }
             path[i] = malloc(30*sizeof(char));
-            strcpy(path[0], args[0]);
-            if(args[i] == NULL)
-                break;
+            strcpy(path[i], args[i]);
+            printf(">path[i] = %s", path[i]);
         }
     }
 }
