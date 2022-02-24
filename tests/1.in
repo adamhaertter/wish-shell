@@ -1,4 +1,4 @@
 path /usr/bin tests
 wc tests/10.rc
-cat
+p6.sh
 p1.sh
