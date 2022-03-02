@@ -33,7 +33,10 @@ void run_command(char* str) {
     char **args; 
     del_newline(str);
 
+    //printf("@Pre-processed: %s\n", str);
+
     command = strsep(&str," ");
+    //printf(">cmd set, args left as %s\n", str);
     args = split_array(str);
     /*
     printf(">command: %s\n", command);
@@ -54,7 +57,7 @@ void run_command(char* str) {
         wish_path(args, path);
 
         //printf(">>path addr: %p\n", path);
-        if(path == NULL)
+        //if(path == NULL)
         //printf("path is null in comm.c\n");
 
         return;

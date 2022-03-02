@@ -10,12 +10,13 @@ char** split_array(char* str) {
         return NULL;
     }
     char **ret = malloc(100);
-    char *temp_string;
+    char *temp_string = "";
     int i = 0;
     while(temp_string != NULL){
         temp_string = strsep(&str," ");
         ret[i] = temp_string;
         i++;
+        //printf(">>args[%d] = %s\n", i, temp_string);
     }
     ret[i] = '\0';
     return ret;

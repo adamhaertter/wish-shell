@@ -21,7 +21,7 @@ void wish_path(char **args, char **path) {
             }
             path[i] = malloc(30*sizeof(char));
             strcpy(path[i], args[i]);
-            //printf(">path[%d] = %s\n", i, path[i]);
+            //printf(">>path[%d] = %s\n", i, path[i]);
             //printf(">>path addr: %p\n", path);
         }
     }
