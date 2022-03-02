@@ -17,11 +17,18 @@ int main(int argc, char* argv[]) {
         //batch
         fp = fopen(argv[1], "r");
         while(1){
+            printf("#pre fp loc: %ld\n", ftell(fp));
             getline(&buffer, &n, fp);           
-            if(feof(fp))
+            if(feof(fp)) {
+                printf("#feof before execution\n");
                 break;
+            }
+            printf("#Echo %s", buffer);
             run_command(buffer);
+            
+            printf("#post fp loc: %ld\n", ftell(fp));
         }
+        fclose(fp);
     } else {
         printf("Please only include 0 or 1 argument(s) alongside the program call: the name of the file to echo\n");
         return 0;
@@ -63,6 +70,7 @@ void run_command(char* str) {
         return;
     } else 
     if(strcmp(command, "cd")==0){
+        printf(">>cd!\n");
         wish_cd(args);
         return;
     }
