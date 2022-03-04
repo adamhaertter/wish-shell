@@ -81,7 +81,6 @@ void run_command(char* str) {
     if(index != -1) {
         // Redirect
         wish_redirect(args, index);
-        return;
     }
 
     // Variable Construction
