@@ -17,16 +17,18 @@ int main(int argc, char* argv[]) {
         //batch
         fp = fopen(argv[1], "r");
         while(1){
-            printf("#pre fp loc: %ld\n", ftell(fp));
-            getline(&buffer, &n, fp);           
+            //printf("#pre fp loc: %ld\n", ftell(fp));
+            int getline_result = getline(&buffer, &n, fp);   
+            //printf("#getline gives code %d\n", getline_result);        
             if(feof(fp)) {
-                printf("#feof before execution\n");
+                //printf("#feof before execution\n");
                 break;
             }
-            printf("#Echo %s", buffer);
+            fseek(fp, 0L, SEEK_CUR);
+            //printf("#Echo %s", buffer);
             run_command(buffer);
             
-            printf("#post fp loc: %ld\n", ftell(fp));
+            //printf("#post fp loc: %ld\n\n", ftell(fp));
         }
         fclose(fp);
     } else {
@@ -70,7 +72,7 @@ void run_command(char* str) {
         return;
     } else 
     if(strcmp(command, "cd")==0){
-        printf(">>cd!\n");
+        //printf(">>cd!\n");
         wish_cd(args);
         return;
     }
