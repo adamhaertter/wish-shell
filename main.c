@@ -58,6 +58,8 @@ void run_command(char* str) {
     else
         printf(">path[0]: %s\n", *path);
 */
+    int index = check_for_redirect(args);
+    //printf("> Redirect index: %d\n", index);
     // Function Calls
     if(strcmp(command, "exit")==0) {
         wish_exit(args);
@@ -74,6 +76,11 @@ void run_command(char* str) {
     if(strcmp(command, "cd")==0){
         //printf(">>cd!\n");
         wish_cd(args);
+        return;
+    } else 
+    if(index != -1) {
+        // Redirect
+        wish_redirect(args, index);
         return;
     }
 

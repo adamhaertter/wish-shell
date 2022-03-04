@@ -33,3 +33,26 @@ void wish_cd(char **args) {
         print_error();
     chdir(args[0]);
 }
+
+int check_for_redirect(char** args) {
+    if(args == NULL)
+        return -1;
+    for(int i = 0; i < MAX_ARGS; i++) {
+        if(args[i] == NULL)
+            break;
+        else if(strcmp(args[i], ">") == 0)
+            return i;
+    }
+    return -1;
+}
+
+void wish_redirect(char **args, int redir_index) {
+    // args[0] is guaranteed to be >
+    if(args[redir_index+1] == NULL) {
+        // No path to redirect
+        print_error();
+    } else {
+        freopen(args[redir_index+1], "w", stdout);
+    }
+
+}
