@@ -37,12 +37,24 @@ void wish_cd(char **args) {
 int check_for_redirect(char** args) {
     if(args == NULL)
         return -1;
+    //Check for separate argument
     for(int i = 0; i < MAX_ARGS; i++) {
         if(args[i] == NULL)
             break;
         else if(strcmp(args[i], ">") == 0)
             return i;
     }
+
+    //Check for contained within argument
+    for(int i = 0; i < MAX_ARGS; i++) {
+        if(args[i] == NULL)
+            break;
+        /*for(int j = 0; j < strlen(args[i]); j++){
+            if(printf("%c ", args[i][j]));
+        }
+        printf("\n");*/
+    }
+
     return -1;
 }
 
