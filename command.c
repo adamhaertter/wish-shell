@@ -49,10 +49,19 @@ int check_for_redirect(char** args) {
     for(int i = 0; i < MAX_ARGS; i++) {
         if(args[i] == NULL)
             break;
-        /*for(int j = 0; j < strlen(args[i]); j++){
-            if(printf("%c ", args[i][j]));
+        for(int j = 0; j < strlen(args[i]); j++){
+            //printf("%c ", args[i][j]);
+            if(args[i][j] == '>'){
+                /* 
+                //I DONT KNOW IF THIS IS RIGHT, but you have to split args[i] into 3 args if they're one string (unfinished)
+                char **split_arg = args[i];
+                arg[i] = strsep(split_arg,">");
+                args[i] = temp_string;
+                i++;
+                */
+            }
         }
-        printf("\n");*/
+        //printf("\n");
     }
 
     return -1;
