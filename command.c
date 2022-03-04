@@ -48,8 +48,8 @@ int check_for_redirect(char** args) {
 
 void wish_redirect(char **args, int redir_index) {
     // args[0] is guaranteed to be >
-    if(args[redir_index+1] == NULL) {
-        // No path to redirect
+    if(args[redir_index+1] == NULL || args[redir_index+2] != NULL) {
+        // No path to redirect or multiple redirects
         print_error();
     } else {
         freopen(args[redir_index+1], "w", stdout);
