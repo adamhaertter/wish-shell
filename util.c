@@ -15,19 +15,18 @@ char** split_array(char* str) {
     int temp_counter = 0;
     while(1){
         temp_string = strsep(&str," ");
-        //printf(">>Try %d, ts = |%s|\n", temp_counter++, temp_string);
         if(temp_string == NULL) 
             break;
         if(strcmp(temp_string, "") == 0) //Ignore whitespace "args"
             continue;
         ret[i] = temp_string;
-        //printf(">>args[%d] = %s\n", i, temp_string);
         i++;
     }
     ret[i] = '\0';
     return ret;
 }
 
+// For testing purposes
 void print_char_array(char** arr) {
     for(int i = 0; i < MAX_ARGS; i++) {
         if(arr[i] != NULL) {
