@@ -16,6 +16,8 @@ int main(int argc, char* argv[]) {
     } else if(argc == 2) {
         //batch
         fp = fopen(argv[1], "r");
+        if(fp == NULL)
+            print_error_fatal();
         while(1){
             //printf("#pre fp loc: %ld\n", ftell(fp));
             int getline_result = getline(&buffer, &n, fp);   
