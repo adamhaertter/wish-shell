@@ -32,8 +32,7 @@ int main(int argc, char* argv[]) {
         }
         fclose(fp);
     } else {
-        printf("Please only include 0 or 1 argument(s) alongside the program call: the name of the file to echo\n");
-        return 0;
+        print_error_fatal();
     }
 }
 
@@ -121,6 +120,12 @@ void print_error() {
     char *err = "An error has occurred\n";
     write(STDERR_FILENO, err, strlen(err));
     exit(0);
+}
+
+void print_error_fatal() {
+    char *err = "An error has occurred\n";
+    write(STDERR_FILENO, err, strlen(err));
+    exit(1);
 }
 
 void build_exec_vars(char** exec_arr, char* exec_str, char** args, char* command) {

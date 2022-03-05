@@ -12,4 +12,5 @@ char **path = default_path;
 
 void run_command(char* str);
 void print_error();
+void print_error_fatal();
 void build_exec_vars(char** exec_arr, char* exec_str, char** args, char* command);
