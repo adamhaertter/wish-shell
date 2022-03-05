@@ -14,7 +14,7 @@ void wish_path(char **args, char **path) {
     if(args == NULL) {
         path[0] = NULL;
     } else {
-        for(int i = 0; i < 10; i++) {    
+        for(int i = 0; i < MAX_ARGS; i++) {    
             if(args[i] == NULL) {
                 break;
             }

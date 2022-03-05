@@ -6,6 +6,8 @@ int main(int argc, char* argv[]) {
     char* buffer = NULL;
     size_t n = 32;
     int line_count;
+    default_path[0] = "/bin";
+    default_path[1] = "";
     if(argc == 1){
         //interactive
         while(1) { 
