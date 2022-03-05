@@ -7,7 +7,7 @@
 #define MAX_ARGS 10
 
 FILE *fp;
-char* default_path[] = {"/bin", "/user/bin"};
+char* default_path[] = {"/bin", ""};
 char **path = default_path;
 
 void run_command(char* str);

@@ -80,6 +80,10 @@ void run_command(char* str) {
     } else 
     if(index != -1) {
         // Redirect
+
+        //printf("> Printing args\n");
+        //print_char_array(args);
+
         wish_redirect(args, index);
     }
 

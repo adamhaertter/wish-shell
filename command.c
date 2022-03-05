@@ -46,12 +46,18 @@ int check_for_redirect(char** args) {
     }
 
     //Check for contained within argument
-    for(int i = 0; i < MAX_ARGS; i++) {
+    for(int i = MAX_ARGS; i >= 0; i--) {
         if(args[i] == NULL)
-            break;
+            continue;
         for(int j = 0; j < strlen(args[i]); j++){
             //printf("%c ", args[i][j]);
-            if(args[i][j] == '>'){
+            if(args[i][j] == '>') {
+                char *destination = malloc(100); //MIGHT CAUSE MEM LEAK
+                strcpy(destination, args[i]);
+                args[i] = strsep(&destination, ">");
+                args[i+1] = ">";
+                args[i+2] = destination;
+                return i+1;
                 /* 
                 //I DONT KNOW IF THIS IS RIGHT, but you have to split args[i] into 3 args if they're one string (unfinished)
                 char **split_arg = args[i];
@@ -68,12 +74,15 @@ int check_for_redirect(char** args) {
 }
 
 void wish_redirect(char **args, int redir_index) {
-    // args[0] is guaranteed to be >
+    // args[redir_index] is guaranteed to be >
     if(args[redir_index+1] == NULL || args[redir_index+2] != NULL) {
         // No path to redirect or multiple redirects
         print_error();
     } else {
         freopen(args[redir_index+1], "w", stdout);
+        // Set the redirect args to NULL so they don't get passed to the command
+        args[redir_index] = NULL;
+        args[redir_index+1] = NULL;
     }
 
 }

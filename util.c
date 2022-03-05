@@ -21,3 +21,11 @@ char** split_array(char* str) {
     ret[i] = '\0';
     return ret;
 }
+
+void print_char_array(char** arr) {
+    for(int i = 0; i < MAX_ARGS; i++) {
+        if(arr[i] != NULL) {
+            printf(">>> array[%d] = %s\n", i, arr[i]);
+        } else break;
+    }
+}
