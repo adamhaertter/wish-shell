@@ -58,7 +58,6 @@ void run_command(char* str) {
     else
         printf(">path[0]: %s\n", *path);
 */
-    int index = check_for_redirect(args);
     //printf("> Redirect index: %d\n", index);
     // Function Calls
     if(strcmp(command, "exit")==0) {
@@ -77,26 +76,35 @@ void run_command(char* str) {
         //printf(">>cd!\n");
         wish_cd(args);
         return;
-    } else 
-    if(index != -1) {
+    }/* else {
         // Redirect
 
+        int index = check_for_redirect(args);    
+
+        wish_redirect(args, index);
         //printf("> Printing args\n");
         //print_char_array(args);
 
-        wish_redirect(args, index);
-    }
+    }*/
+    
+    int index = check_for_redirect(args);    
 
     // Variable Construction
     char* exec_arr[MAX_ARGS];
     char* exec_str = malloc(100);
     build_exec_vars(exec_arr, exec_str, args, command);
     //printf(">exec vars built\n");
+    //print_char_array(exec_arr);
     // Execution & Fork
     int result = 0;
     int pid = fork();
     if(pid == 0){
         // Child process
+        
+        if(index != -1) {
+            wish_redirect(exec_arr, index+1);
+        }
+
         result = execv(exec_str, exec_arr);
         if(result)
             print_error();
