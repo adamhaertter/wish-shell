@@ -12,11 +12,17 @@ char** split_array(char* str) {
     char **ret = malloc(100);
     char *temp_string = "";
     int i = 0;
-    while(temp_string != NULL){
+    int temp_counter = 0;
+    while(1){
         temp_string = strsep(&str," ");
+        //printf(">>Try %d, ts = |%s|\n", temp_counter++, temp_string);
+        if(temp_string == NULL) 
+            break;
+        if(strcmp(temp_string, "") == 0) //Ignore whitespace "args"
+            continue;
         ret[i] = temp_string;
-        i++;
         //printf(">>args[%d] = %s\n", i, temp_string);
+        i++;
     }
     ret[i] = '\0';
     return ret;

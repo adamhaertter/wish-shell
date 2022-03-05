@@ -39,16 +39,27 @@ int main(int argc, char* argv[]) {
 }
 
 void run_command(char* str) {
-    char *command;
+    char *command = "";
     char **args; 
     del_newline(str);
 
     //printf("@Pre-processed: %s\n", str);
 
-    command = strsep(&str," ");
+    while(strcmp(command, "") == 0) {
+        command = strsep(&str," ");
+        if(command == NULL)
+            break;
+    }
     //printf(">cmd set, args left as %s\n", str);
+    //printf(">cmd is |%s|\n", command);
     args = split_array(str);
-    /*
+
+    if(command == NULL && args == NULL) {
+        // Pulled an empty line
+        return;
+    }
+
+   /* printf("args set\n");
     printf(">command: %s\n", command);
     if(args == NULL)
         printf(">args is null\n");

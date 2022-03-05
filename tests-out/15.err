@@ -1,2 +1,0 @@
-malloc(): corrupted top size
-../tester/run-tests.sh: line 27: 19571 Aborted                 ./wish tests/15.in
