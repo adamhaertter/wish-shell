@@ -79,9 +79,9 @@ int check_for_parallel(char** args) {
     if(args == NULL)
         return -1;
     //Check for separate argument
-    for(int i = MAX_ARGS; i >= 0; i--) {
+    for(int i = 0; i < MAX_ARGS; i++) {
         if(args[i] == NULL)
-            continue;
+            break;
         else if(strcmp(args[i], "&") == 0)
             return i;
     }

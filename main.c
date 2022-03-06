@@ -63,16 +63,17 @@ void run_command(char* str) {
         return;
     
     if(para_index != -1) {
- 
-        
-    if(args[para_index + 1] == NULL) {
-        // & without parallel command to run
-        return;
-    }
 
         pid_para = fork();
         if(pid_para == 0) {
             // Run command after the &   
+
+            if(args[para_index + 1] == NULL) {
+                // & without parallel command to run
+                //printf("> & WITHOUT PARALLEL COMMAND\n");
+                exit(0);
+            }
+            
             // Variable Construction
             char* para_arr[para_index];
             for(int i = para_index; i < MAX_ARGS; i++) {
@@ -87,15 +88,19 @@ void run_command(char* str) {
             //printf("out of loop\n");
             command = args[pid_para + 1];
             //printf("cmd %s\n", command);
-            char* exec_arr[MAX_ARGS];
+            /*char* exec_arr[MAX_ARGS];
             char* exec_str = malloc(100);
             build_exec_vars(exec_arr, exec_str, para_arr, command);
-            print_char_array(exec_arr);
+            */
+            //print_char_array(exec_arr);
             //execute(exec_str, exec_arr, -1);
-            return;
+            char *str = arr_to_str(command, para_arr);
+            //printf("str = %s", str);
+            run_command(str);
+            exit(0);
         } else {
             // Continue with first command, overwrite rest of args to NULL
-            waitpid(pid_para, 0, 0); //remove this shittt
+            //waitpid(pid_para, 0, 0); //remove this shittt
             //printf("PARENT TRAP\n");
             for(int i = para_index; i < MAX_ARGS; i++) {
                 if(args[i] != NULL)
@@ -134,9 +139,10 @@ void run_command(char* str) {
         waitpid(pid, 0, 0);
         free(exec_str);
     }
-    if(pid_para != -1)
+    if(pid_para != -1){
+        //printf(">> cmd = %s, pid_para = %d\n", command, pid_para);
         waitpid(pid_para, 0, 0);
-    return;
+    }
 }
 
 void execute(char* exec_str, char** exec_arr, int redir_index) {

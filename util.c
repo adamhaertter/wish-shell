@@ -26,6 +26,19 @@ char** split_array(char* str) {
     return ret;
 }
 
+char* arr_to_str(char* command, char** args) {
+    char *ret = malloc(100);
+    strcpy(ret, command);
+    int i = 0;
+    while(args[i] != 0){
+        strcat(ret, " ");
+        strcat(ret, args[i]);
+        i++;
+    }
+    strcat(ret, "\n\0");
+    return ret;
+}
+
 // For testing purposes
 void print_char_array(char** arr) {
     for(int i = 0; i < MAX_ARGS; i++) {
