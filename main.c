@@ -53,11 +53,12 @@ void run_command(char* str) {
         return;
     }
 
-    //printf("cmd %s\n", command);
+    printf("cmd %s\n", command);
     //print_char_array(args);
 
     int pid_para = -1;
     int para_index = check_for_parallel(args);
+    printf(">para index %d\n", para_index);
     
     if(strcmp(command, "&") == 0) 
         return;
@@ -73,7 +74,7 @@ void run_command(char* str) {
                 //printf("> & WITHOUT PARALLEL COMMAND\n");
                 exit(0);
             }
-            
+
             // Variable Construction
             char* para_arr[para_index];
             for(int i = para_index; i < MAX_ARGS; i++) {
@@ -95,7 +96,7 @@ void run_command(char* str) {
             //print_char_array(exec_arr);
             //execute(exec_str, exec_arr, -1);
             char *str = arr_to_str(command, para_arr);
-            //printf("str = %s", str);
+            printf("str = %s", str);
             run_command(str);
             exit(0);
         } else {

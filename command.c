@@ -87,14 +87,15 @@ int check_for_parallel(char** args) {
     }
 
     //Check for contained within argument
-    for(int i = MAX_ARGS; i >= 0; i--) {
+    for(int i = 0; i < MAX_ARGS; i++) {
         if(args[i] == NULL)
-            continue;
+            break;
+        printf(">>args[%d] = %s\n", i, args[i]);
         for(int j = 0; j < strlen(args[i]); j++){
             if(args[i][j] == '&') {
                 char *destination = malloc(100);
                 strcpy(destination, args[i]);
-                args[i] = strsep(&destination, ">");
+                args[i] = strsep(&destination, "&");
                 args[i+1] = "&";
                 args[i+2] = destination;
                 return i+1;

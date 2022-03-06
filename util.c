@@ -39,6 +39,24 @@ char* arr_to_str(char* command, char** args) {
     return ret;
 }
 
+/*char** expand_by_delim(char **arr, char* delim) {
+    char **ret[20];
+    
+    int i = 0;
+    //Copy array into new array
+    for(i = 0; i < MAX_ARGS; i++) {
+        if(arr[i] == NULL)
+            break;
+        strcpy(ret[i], arr[i]);
+        char *temp_string = strsep(&ret[i], delim);
+        strcpy(ret[i])
+    }
+
+    for(i; i < MAX_ARGS; i++) {
+
+    }
+}*/
+
 // For testing purposes
 void print_char_array(char** arr) {
     for(int i = 0; i < MAX_ARGS; i++) {
