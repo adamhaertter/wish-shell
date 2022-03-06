@@ -53,6 +53,57 @@ void run_command(char* str) {
         return;
     }
 
+    //printf("cmd %s\n", command);
+    //print_char_array(args);
+
+    int pid_para = -1;
+    int para_index = check_for_parallel(args);
+    
+    if(strcmp(command, "&") == 0) 
+        return;
+    
+    if(para_index != -1) {
+ 
+        
+    if(args[para_index + 1] == NULL) {
+        // & without parallel command to run
+        return;
+    }
+
+        pid_para = fork();
+        if(pid_para == 0) {
+            // Run command after the &   
+            // Variable Construction
+            char* para_arr[para_index];
+            for(int i = para_index; i < MAX_ARGS; i++) {
+                if(args[para_index+i+2] == NULL) {
+                    para_arr[i] = NULL;
+                    break;
+                }
+                para_arr[i] = malloc(30);
+                strcpy(para_arr[i], args[para_index+2+i]);
+                //printf("> para_arr[%d] = %s\n", i, para_arr[i]);
+            } 
+            //printf("out of loop\n");
+            command = args[pid_para + 1];
+            //printf("cmd %s\n", command);
+            char* exec_arr[MAX_ARGS];
+            char* exec_str = malloc(100);
+            build_exec_vars(exec_arr, exec_str, para_arr, command);
+            print_char_array(exec_arr);
+            //execute(exec_str, exec_arr, -1);
+            return;
+        } else {
+            // Continue with first command, overwrite rest of args to NULL
+            waitpid(pid_para, 0, 0); //remove this shittt
+            //printf("PARENT TRAP\n");
+            for(int i = para_index; i < MAX_ARGS; i++) {
+                if(args[i] != NULL)
+                    args[i] = NULL;
+            }
+        }
+    }
+
     // Function Calls
     if(strcmp(command, "exit")==0) {
         wish_exit(args);
@@ -77,22 +128,26 @@ void run_command(char* str) {
     int pid = fork();
     if(pid == 0){
         // Child process
-        
-        // Redirect if neccessary
-        if(redir_index != -1)
-            wish_redirect(exec_arr, redir_index+1);
-
-        result = execv(exec_str, exec_arr);
-
-        if(result)
-            print_error();
-        
+        execute(exec_str, exec_arr, redir_index);
     } else {
         // Parent process
         waitpid(pid, 0, 0);
         free(exec_str);
-        return;
     }
+    if(pid_para != -1)
+        waitpid(pid_para, 0, 0);
+    return;
+}
+
+void execute(char* exec_str, char** exec_arr, int redir_index) {
+        // Redirect if neccessary
+        if(redir_index != -1)
+            wish_redirect(exec_arr, redir_index+1);
+
+        int result = execv(exec_str, exec_arr);
+
+        if(result)
+            print_error();
 }
 
 void print_error() {
