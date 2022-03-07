@@ -35,9 +35,29 @@ int main(int argc, char* argv[]) {
 }
 
 void run_command(char* str) {
+    // First try to separate by parallel
+    int pid_para = -1;
+    char *parallel_command;
+    char* shell_call = strsep(&str, "&");
+    //printf("shell call %sstr %s\n", shell_call, str);
+    if(str != NULL){
+        pid_para = fork();
+        if(pid_para == 0) {
+            parallel_command = malloc(100);
+            strcpy(parallel_command, str);
+            run_command(parallel_command);
+            exit(0);
+        } else {
+            strcat(shell_call, "\n");
+        }
+    }
+    str = shell_call;
+
     char *command = "";
     char **args; 
     del_newline(str);
+
+
 
     while(strcmp(command, "") == 0) {
         // Find command while ignoring whitespace
@@ -45,7 +65,11 @@ void run_command(char* str) {
         if(command == NULL)
             break;
     }
-    
+
+    /*char* cmd_parallel = strsep(&str, "&");
+    if(cmd_parallel != NULL) 
+        command = cmd_parallel;
+*/
     args = split_array(str);
 
     if(command == NULL && args == NULL) {
@@ -53,16 +77,17 @@ void run_command(char* str) {
         return;
     }
 
-    printf("cmd %s\n", command);
+    //printf("cmd %s\n", command);
     //print_char_array(args);
 
+/*
     int pid_para = -1;
     int para_index = check_for_parallel(args);
     printf(">para index %d\n", para_index);
-    
+    */
     if(strcmp(command, "&") == 0) 
         return;
-    
+    /*
     if(para_index != -1) {
 
         pid_para = fork();
@@ -78,7 +103,7 @@ void run_command(char* str) {
             // Variable Construction
             char* para_arr[para_index];
             for(int i = para_index; i < MAX_ARGS; i++) {
-                if(args[para_index+i+2] == NULL) {
+                if(args[para_index+i+2] == NULL) { //i think this args call might be wrong 
                     para_arr[i] = NULL;
                     break;
                 }
@@ -92,7 +117,7 @@ void run_command(char* str) {
             /*char* exec_arr[MAX_ARGS];
             char* exec_str = malloc(100);
             build_exec_vars(exec_arr, exec_str, para_arr, command);
-            */
+            
             //print_char_array(exec_arr);
             //execute(exec_str, exec_arr, -1);
             char *str = arr_to_str(command, para_arr);
@@ -109,6 +134,7 @@ void run_command(char* str) {
             }
         }
     }
+    */
 
     // Function Calls
     if(strcmp(command, "exit")==0) {
